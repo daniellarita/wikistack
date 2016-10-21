@@ -10,7 +10,7 @@ router.get('/', function(req, res, next) {
   .then(function(foundPage){
     // elements=[];
     // elements.push(foundPage)
-    console.log(foundPage.urlTitle)
+    console.log(foundPage);
     res.render('index', {pages:foundPage})
   })
   .catch(next);
@@ -19,17 +19,40 @@ router.get('/', function(req, res, next) {
 //submit a new page to the database
 router.post('/', function(req, res, next) {
 
-var page = Page.build({
-  title: req.body.page_title,
-  content: req.body.page_content
-});
+// var page = Page.build({
+//   title: req.body.page_title,
+//   content: req.body.page_content
+// });
+//
+//   page.save().then(function(savedPage){
+//     res.redirect(savedPage.route); // route virtual FTW
+//   }).catch(next);
+debugger;
+console.log(req.body);
+User.findOrCreate({
+  where: {
+    name: req.body.author_name,
+    email: req.body.author_email
+  }
+})
+.then(function (values) {
 
-// page.save();
-// res.json(req.body)
+  var user = values[0];
 
-  page.save().then(function(savedPage){
-    res.redirect(savedPage.route); // route virtual FTW
-  }).catch(next);
+  var page = Page.build({
+    title: req.body.page_title,
+    content: req.body.page_content
+  });
+
+  return page.save().then(function (page) {
+    return page.setAuthor(user);
+  });
+
+})
+.then(function (page) {
+  res.redirect(page.route);
+})
+.catch(next);
 });
 
 //retrieve the "add a page" form
