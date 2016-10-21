@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  <h3>Add a Page</h3>
+  <hr>
+  <form method="POST" action="/wiki/">
+
+    <div class="form-group row">
+      <label for="author_name" class="col-xs-2 col-form-label">Author Name</label>
+      <div class="col-xs-10">
+        <input class="form-control" type="text" name="author_name">
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="author_email" class="col-xs-2 col-form-label">Author Email</label>
+      <div class="col-xs-10">
+        <input class="form-control" type="text" name="author_email">
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="page_title" class="col-xs-2 col-form-label">Page Title</label>
+      <div class="col-xs-10">
+        <input class="form-control" type="text" name="page_title">
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="page_content" class="col-xs-2 col-form-label">Page Content</label>
+      <div class="col-xs-10">
+        <input class="form-control" type="text" name="page_content">
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="page_status" class="col-xs-2 col-form-label">Page Status</label>
+      <div class="col-xs-10">
+        <input class="form-control" type="text" name="page_status">
+      </div>
+    </div>
+
+        <div class="col-sm-offset-2 col-sm-10">
+          <button type="submit" class="btn btn-primary">submit</button>
+        </div>
+
+  </form>
+
+
+{% endblock %}
