@@ -7,28 +7,14 @@ var User = models.User;
 //retrieve all wiki pages
 router.get('/', function(req, res, next) {
   Page.findAll()
-  .then(function(foundPage){
-    // elements=[];
-    // elements.push(foundPage)
-    console.log(foundPage);
-    res.render('index', {pages:foundPage})
+  .then(function(foundPages){
+    res.render('index', {pages:foundPages})
   })
   .catch(next);
 });
 
 //submit a new page to the database
 router.post('/', function(req, res, next) {
-
-// var page = Page.build({
-//   title: req.body.page_title,
-//   content: req.body.page_content
-// });
-//
-//   page.save().then(function(savedPage){
-//     res.redirect(savedPage.route); // route virtual FTW
-//   }).catch(next);
-debugger;
-console.log(req.body);
 User.findOrCreate({
   where: {
     name: req.body.author_name,
@@ -41,13 +27,13 @@ User.findOrCreate({
 
   var page = Page.build({
     title: req.body.page_title,
-    content: req.body.page_content
+    content: req.body.page_content,
+    tags: req.body.page_status
   });
 
   return page.save().then(function (page) {
     return page.setAuthor(user);
-  });
-
+  })
 })
 .then(function (page) {
   res.redirect(page.route);
@@ -62,23 +48,23 @@ router.get('/add', function(req, res) {
 
 //retrieve individual wiki page
 router.get('/:urlTitle', function (req, res, next) {
-  //console.log(page.author_name)
-  //res.render('wikipage', {page:Page})
   Page.findOne({
     where: {
       urlTitle: req.params.urlTitle
     }
   })
   .then(function(foundPage){
-    //res.json(foundPage)
+    if (foundPage===null){
+      return next (new Error("Sorry, that page was not found."))
+    }
     res.render('wikipage', {page:foundPage})
   })
-  .catch(next);
-
-  // page.save().then(function(savedPage){
-  // res.redirect(savedPage.route); // route virtual FTW
-  // }).catch(next);
-
+  .catch(next)
 });
+
+router.use(function(err, req, res, next){
+  console.error(err);
+  res.status(500).send(err.message)
+})
 
 module.exports=router;
