@@ -14,7 +14,11 @@
   </div>
 
   <hr/>
-  <div class="page-body">{{page.content}}</div>
+  <div class="page-body">
+    {% autoescape false %}
+      {{page.renderedContent}}
+    {% endautoescape %}
+  </div>
   <hr/>
   <a href="/wiki/{{page.urlTitle}}/edit" class="btn btn-primary">edit this page</a>
   <a href="{{page.route}}" class="btn btn-danger">delete this page</a>

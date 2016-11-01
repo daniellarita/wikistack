@@ -10,6 +10,7 @@
     "morgan": "^1.7.0",
     "nodemon": "^1.11.0",
     "nunjucks": "^2.5.2",
+    "nunjucks-autoescape": "^1.0.1",
     "pg": "^6.1.0",
     "pg-hstore": "^2.3.2",
     "sequelize": "^3.24.4"

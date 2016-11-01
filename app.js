@@ -15,6 +15,8 @@ var env = nunjucks.configure('views', {noCache: true});
 app.set('view engine', 'html');
 // when res.render works with html files, have it use nunjucks to do so
 app.engine('html', nunjucks.render);
+var AutoEscapeExtension = require("nunjucks-autoescape")(nunjucks);
+env.addExtension('AutoEscapeExtension', new AutoEscapeExtension(env));
 var logger=require('./logger');
 app.use(logger);
 var models = require('./models');

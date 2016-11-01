@@ -3,6 +3,7 @@ var db = new Sequelize('postgres://localhost:5432/wikistack', {
   //this turns logging of each query off; set to true if you want logging
     logging: false
 });
+const marked=require('marked');
 
 var Page = db.define('page', {
     title: {
@@ -35,7 +36,10 @@ var Page = db.define('page', {
   getterMethods:{
     route: function(){
       return '/wiki/'+this.urlTitle;
-    }
+    },
+    renderedContent:function(){
+        return marked(this.content)
+      }
   },
   classMethods:{
     findByTag: function(tag){
