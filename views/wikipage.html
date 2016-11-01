@@ -1,12 +1,19 @@
 {% extends "layout.html" %}
 
 {% block content %}
-  <h3>{{page.title}} <small> (<a href="PLACEHOLDER_URL_TITLE/similar">Similar</a>)</small></h3>
-  <h4>by <a href="PLACEHOLDER-AUTHOR-URL">{{user.name}}</a></h4>
-  <div>PLACEHOLDER TAG LIST</div>
+  <h3>{{page.title}} <small> (<a href="{{page.route}}/similar">Similar</a>)</small></h3>
+  <h4>by <a href="/users/{{page.author.id}}">{{page.author.name}}</a></h4>
+  <div>
+    <ul>
+      {% for tag in page.tags %}
+        <li>
+          <a href="/wiki/search/{{tag}}">{{tag}}
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
 
   <hr/>
-  <div>PLACEHOLDER AUTHOR NAME WITH LINK TO AUTHOR PAGE</div>
   <div class="page-body">{{page.content}}</div>
   <hr/>
   <a href="/wiki/{{page.urlTitle}}/edit" class="btn btn-primary">edit this page</a>

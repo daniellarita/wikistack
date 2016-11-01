@@ -19,8 +19,10 @@ var logger=require('./logger');
 app.use(logger);
 var models = require('./models');
 var wikiRouter = require('./routes/wiki');
+var usersRouter=require('./routes/users')
 // ...
 app.use('/wiki', wikiRouter);
+app.use('/users', usersRouter)
 // or, in one line: app.use('/wiki', require('./routes/wiki'));
 
 
@@ -29,9 +31,9 @@ app.get('/', function(req,res){
   res.render('index.html')
 })
 
-models.User.sync({force: true})
+models.User.sync({})
 .then(function () {
-    return models.Page.sync()
+    return models.Page.sync({})
 })
 .then(function () {
     app.listen(3000, function () {

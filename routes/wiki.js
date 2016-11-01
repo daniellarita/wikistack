@@ -15,11 +15,14 @@ router.get('/', function(req, res, next) {
 
 //submit a new page to the database
 router.post('/', function(req, res, next) {
+
 User.findOrCreate({
   where: {
     name: req.body.author_name,
     email: req.body.author_email
+
   }
+
 })
 .then(function (values) {
 
@@ -28,10 +31,12 @@ User.findOrCreate({
   var page = Page.build({
     title: req.body.page_title,
     content: req.body.page_content,
-    tags: req.body.page_status
+    status: req.body.page_status,
+    tags:req.body.page_tags
   });
 
   return page.save().then(function (page) {
+    console.log(page)
     return page.setAuthor(user);
   })
 })
@@ -39,6 +44,8 @@ User.findOrCreate({
   res.redirect(page.route);
 })
 .catch(next);
+
+console.log(req.body)
 });
 
 //retrieve the "add a page" form
@@ -53,14 +60,49 @@ router.get('/:urlTitle', function (req, res, next) {
       urlTitle: req.params.urlTitle
     }
   })
-  .then(function(foundPage){
-    if (foundPage===null){
+  .then(function(page){
+    if (page===null){
       return next (new Error("Sorry, that page was not found."))
     }
-    res.render('wikipage', {page:foundPage})
+
+    return page.getAuthor()
+    .then(function(author){
+      page.author=author;
+      res.render('wikipage', {page:page})
+    })
   })
   .catch(next)
 });
+
+router.get('/search/:tag',function(req,res, next){
+  Page.findByTag(req.params.tag)
+    .then(function(pages){
+      res.render('index',{
+        pages:pages
+      })
+    })
+    .catch(next)
+})
+
+router.get('/:urlTitle/similar', function(req,res,next){
+  Page.findOne({
+    where:{
+      urlTitle:req.params.urlTitle
+    }
+  })
+  .then(function(page){
+    if (page===null){
+      return next (new Error("Sorry, that page was not found."))
+    }
+    return page.findSimilar();
+  })
+  .then(function(similarPages){
+    res.render('index',{
+      pages:similarPages
+    })
+  })
+  .catch(next)
+})
 
 router.use(function(err, req, res, next){
   console.error(err);

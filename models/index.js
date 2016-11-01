@@ -18,16 +18,48 @@ var Page = db.define('page', {
         allowNull: false
     },
     status: {
-        type: Sequelize.ENUM('open', 'closed'),
+        type: Sequelize.ENUM('open', 'closed')
+    },
+    tags:{
+      type: Sequelize.ARRAY(Sequelize.TEXT),
+      set: function(value) {
+        if (typeof(value) === 'string') {
+          const tagArray = value.split(/\s+/g).map((tag) => tag.trim());
+          this.setDataValue('tags', tagArray);
+        } else {
+          this.setDataValue('tags', value);
+        }
+      }
     }
-    // ,date: {
-    //   type: Sequelize.DATE,
-    //   defaultValue: Sequelize.NOW
-    // }
 },{
   getterMethods:{
     route: function(){
       return '/wiki/'+this.urlTitle;
+    }
+  },
+  classMethods:{
+    findByTag: function(tag){
+      return Page.findAll({
+        where: {
+          tags :{
+            $overlap:[tag]
+          }
+        }
+      })
+    }
+  },
+  instanceMethods:{
+    findSimilar: function(){
+      return Page.findAll({
+        where:{
+          tags:{
+            $overlap:this.tags
+          },
+          id:{
+            $ne:this.id
+          }
+        }
+      })
     }
   }
 });
